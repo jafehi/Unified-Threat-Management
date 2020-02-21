@@ -1,0 +1,50 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run a one-line script
+      run: echo Hello, world!
+    - name: Run a multi-line script
+      run: |
+        echo Add other actions to build,
+        echo test, and deploy your project.
+Copy the file SophosSetup.exe to a shared location which is accessible by the computers you wish to install to.
+Launch SCCM and navigate to Software Library, select Application Management and choose Packages.
+Right-click on Packages and select Create Package.
+On the Package page of the Create Package and Program Wizard, specify the following information as required:
+Name: Sophos Central Managed Endpoint
+Description
+Manufacturer
+Check This package contains source files. Click Browse to open the Set Source Folder dialog box where you can specify the location of the installer file SophosSetup.exe which was setup in Step 3.
+Click next for Standard program type and enter the following information:
+Name: SophosSetup.exe
+Command Line: SophosSetup.exe
+Note: An example command line might be: SophosSetup.exe --quiet
+Program can run: Only when a user is logged on
+Run mode: Run with administrative rights
+Drive mode: Runs with UNC name
+Run and Start-up fields are optional
+On the Requirements section, create a requirement rule that the package runs only on supported Windows platforms.
+Run another program first, Estimated disk space and Maximum allowed run time (minutes) are optional.
+Complete the wizard to finish creating the package.
+The package is now ready to be deployed to your computers@echo off
+SET MCS_ENDPOINT=Sophos\Management Communications System\Endpoint\McsClient.exe
+IF "%PROCESSOR_ARCHITECTURE%" == "x86" GOTO X86_PROG
+IF NOT EXIST "%ProgramFiles(x86)%\%MCS_ENDPOINT%" GOTO INSTALL
+exit /b 0
+
+:X86_PROG
+IF NOT EXIST "%ProgramFiles%\%MCS_ENDPOINT%" GOTO INSTALL
+exit /b 0
+
+:INSTALL
+pushd \\servername\share
+SophosSetup.exe --quiet
+Popd
